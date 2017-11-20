@@ -7,35 +7,40 @@ public class PiCalc {
 		long numThreads = Long.valueOf(args[0]);
 		long totalIterations = Long.valueOf(args[1]);
 		AtomicLong insideCircle = new AtomicLong();
-		
+
 		PiThread[] ts = new PiThread[(int) numThreads];
-		
+
 		for (int i = 0; i < numThreads; i++) {
 			ts[i] = new PiThread(insideCircle, totalIterations/numThreads);
 		}
-		
+
 		for (int i = 0; i < numThreads; i++) {
 			ts[i].start();
 		}
-		
+
 		for (int i = 0; i < numThreads; i++) {
 			try {
 				ts[i].join();
 			} catch (InterruptedException iex) {}
 		}
-		
-		
+		System.out.println("Total\t= " + totalIterations);
+		System.out.println("Inside\t= " + insideCircle);
+		double ratio = insideCircle.floatValue() / totalIterations;
+		System.out.println("Ratio\t= " + ratio);
+		System.out.println("Pi\t= " + (ratio * 4));
+
+
 	}
-	
+
 	private static class PiThread extends Thread {
 		long iterationsPerThread;
 		AtomicLong insideCircle;
-		
+
 		private PiThread(AtomicLong i, long num) {
 			insideCircle = i;
 			iterationsPerThread = num;
 		}
-		
+
 		public void run() {
 			for (int i = 0; i < iterationsPerThread; i++) {
 				double x, y;
